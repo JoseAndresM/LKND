@@ -1,4 +1,4 @@
-name: Test Telegram
+name: Telegram Ping Raw
 
 on:
   workflow_dispatch:
@@ -6,24 +6,16 @@ on:
 jobs:
   ping:
     runs-on: ubuntu-latest
-
     steps:
-      # 1) Traer el código del repo
-      - uses: actions/checkout@v4
-
-      # 2) Instalar Python y dependencias mínimas
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Install deps
-        run: pip install -r requirements.txt
-
-      # 3) Crear un jobs_latest.json ficticio + llamar al sender
-      - name: Send test message
+      - name: Raw POST to Telegram
         env:
           TG_TOKEN  : ${{ secrets.TG_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
         run: |
-          echo '[{"title":"Ping manual","company":"Pipeline","city":"Here","description":"Prueba desde GitHub","url":"https://example.com"}]' > jobs_latest.json
-          python -m notify.push
+          set -x
+          curl -sS -X POST \
+            --data-urlencode "chat_id=${TG_CHAT_ID}" \
+            --data-urlencode "text=🔔 Prueba *RAW* desde GitHub (UTC $(date -u +%H:%M))" \
+            --data-urlencode "parse_mode=Markdown" \
+            "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
+            | jq .
