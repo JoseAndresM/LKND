@@ -1,0 +1,37 @@
+name: Collect new music jobs
+
+on:
+  schedule:
+    # Ejecución cada 2 horas, en el minuto 0 (00:00, 02:00, 04:00, ... UTC)
+    - cron: "0 */2 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pipeline
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TW_BEARER: ${{ secrets.TW_BEARER }}
+        run: |
+          python -m collect.all
+          python -m process.clean
+          python -m notify.push
+
+      - name: Upload DB artefact (opcional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: jobs-sqlite
+          path: jobs.db
