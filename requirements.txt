@@ -3,7 +3,6 @@ feedparser>=6.0
 requests>=2.32
 python-dateutil>=2.9
 sqlite-utils>=3.37
-tweepy>=4.15
 python-telegram-bot>=20.8
 openai>=1.27
 pgsync>=0.30
