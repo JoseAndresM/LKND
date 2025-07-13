@@ -24,7 +24,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          TW_BEARER: ${{ secrets.TW_BEARER }}
+      
         run: |
           python -m collect.all
           python -m process.clean
