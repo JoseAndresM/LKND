@@ -1,7 +1,7 @@
 import json, pathlib
 from collect.doors_open import fetch as fetch_doors
 
-COLLECTORS = [fetch_doors]
+COLLECTORS = [fetch_doors, fetch_musically,]
 
 if __name__ == "__main__":
     all_jobs = []
