@@ -1,5 +1,12 @@
 import json, pathlib
 from collect.doors_open import fetch as fetch_doors
+from collect.musically   import fetch as fetch_musically   # ← nuevo
+
+COLLECTORS = [
+    fetch_doors,
+    fetch_musically,          # ← añade aquí
+]
+
 
 COLLECTORS = [fetch_doors, fetch_musically,]
 
