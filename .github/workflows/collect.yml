@@ -2,36 +2,43 @@ name: Collect new music jobs
 
 on:
   schedule:
-    # Ejecución cada 2 horas, en el minuto 0 (00:00, 02:00, 04:00, ... UTC)
+    # Ejecución cada 2 horas: 00:00, 02:00, 04:00 UTC...
     - cron: "0 */2 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
 
 jobs:
   collect:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.10"   # ← más seguro para python-telegram-bot 13.x
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run pipeline
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-      
+      # 1) Scrape + clean (si falla, error)
+      - name: Run pipeline (scrape & clean)
         run: |
           python -m collect.all
           python -m process.clean
-          python -m notify.push
 
-      - name: Upload DB artefact (opcional)
+      # 2) Notificación por Telegram (no debe tumbar el workflow si falta secret)
+      - name: Notify Telegram
+        env:
+          TG_TOKEN  : ${{ secrets.TG_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: python -m notify.push
+        continue-on-error: true        # ← evita que el job falle si falta secret
+
+      # 3) Guarda la base SQLite como artefacto opcional
+      - name: Upload DB artefact
         uses: actions/upload-artifact@v4
         with:
           name: jobs-sqlite
           path: jobs.db
+
