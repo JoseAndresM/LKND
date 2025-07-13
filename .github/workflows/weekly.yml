@@ -1,0 +1,25 @@
+name: Weekly skills recap
+
+on:
+  schedule:
+    # Sábado 09:00 UTC = 11:00 CET
+    - cron: "0 9 * * 6"
+  workflow_dispatch: {}
+
+jobs:
+  recap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Weekly recap
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TW_BEARER: ${{ secrets.TW_BEARER }}
+        run: python -m weekly.recap
