@@ -1,0 +1,16 @@
+name: Test Telegram
+
+on:
+  workflow_dispatch:   # botón “Run workflow”
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send test message
+        env:
+          TG_TOKEN  : ${{ secrets.TG_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: |
+          echo '[{"title":"Ping manual","company":"Pipeline","city":"Here","description":"Prueba desde GitHub","url":"https://example.com"}]' > jobs_latest.json
+          python -m notify.push
