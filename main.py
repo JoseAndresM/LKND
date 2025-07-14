@@ -177,7 +177,7 @@ class MusicJobsBot:
                 'min_salary': None,
                 'job_types': []
             },
-            'active_sites': [site['name'] for site in self.job_sites if not site.get('requires_auth')]
+            'active_sites': ['Music Business Worldwide', 'Entertainment Careers', 'Indeed Music', 'Music Jobs UK']
         }
     
     def load_stats(self) -> Dict:
