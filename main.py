@@ -60,16 +60,11 @@ class MusicJobsBot:
         self.config_file = 'data/config.json'
         self.stats_file = 'data/statistics.json'
         
-        # Cargar datos
-        self.jobs_db = self.load_database()
-        self.config = self.load_config()
-        self.stats = self.load_stats()
-        
         # Configurar OpenAI si está disponible
         if self.openai_key:
             openai.api_key = self.openai_key
         
-        # Sites de trabajo especializados en música
+        # Sites de trabajo especializados en música - MOVER ESTO ANTES
         self.job_sites = [
             {
                 'name': 'Music Business Worldwide',
@@ -138,6 +133,11 @@ class MusicJobsBot:
             'Live Events': ['tour', 'venue', 'festival', 'concert', 'production'],
             'Media': ['journalist', 'writer', 'editor', 'content', 'social media']
         }
+        
+        # Cargar datos - AHORA SÍ, DESPUÉS DE DEFINIR job_sites
+        self.jobs_db = self.load_database()
+        self.config = self.load_config()
+        self.stats = self.load_stats()
     
     def load_database(self) -> Dict:
         """Carga la base de datos de trabajos"""
